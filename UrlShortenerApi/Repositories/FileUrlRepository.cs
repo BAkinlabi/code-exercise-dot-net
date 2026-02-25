@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using Microsoft.Extensions.Options;
+using System.Text.Json;
 using UrlShortenerApi.Models;
 using UrlShortenerApi.Repositories.Interfaces;
 
@@ -9,9 +10,9 @@ namespace UrlShortenerApi.Repositories
         private readonly string _filePath;
         private readonly SemaphoreSlim _lock = new(1, 1);
 
-        public FileUrlRepository(string filePath)
+        public FileUrlRepository(IOptions<UrlShortenerServiceOptions> options)
         {
-            _filePath = filePath;
+            _filePath = options.Value.FilePath ?? "json-url-datastore.json";
         }
 
         private async Task<List<ShortUrl>> LoadAsync()
