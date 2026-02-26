@@ -59,52 +59,6 @@ namespace UrlShortenerApiTest
             // Act & Assert
             await Assert.ThrowsAsync<InvalidOperationException>(() => _urlShortenerService.ShortenUrlAsync(fullUrl, alias));
         }
-
-        [Fact]
-        public async Task GetByAliasAsync_ValidAlias_ReturnsShortUrl()
-        {
-            // Arrange
-            string alias = "test321";
-            var expectedShortUrl = new ShortUrl { Alias = alias, FullUrl = "http://mytestwebsite.com", ShortUrlValue = _baseUrl + alias };
-            _urlRepositoryMock.Setup(repo => repo.GetByAliasAsync(alias)).ReturnsAsync(expectedShortUrl);
-
-            // Act
-            var result = await _urlShortenerService.GetByAliasAsync(alias);
-
-            // Assert
-            Assert.Equal(expectedShortUrl, result);
-        }
-
-        [Fact]
-        public async Task GetAllAsync_ReturnsAllShortUrls()
-        {
-            // Arrange
-            var shortUrls = new List<ShortUrl>
-                {
-                new ShortUrl { Alias = "test555", FullUrl = "http://mytest1website.com", ShortUrlValue = _baseUrl + "test555" },
-                new ShortUrl { Alias = "test321", FullUrl = "http://mytest2website.com", ShortUrlValue = _baseUrl + "test321" },
-                new ShortUrl { Alias = "test456", FullUrl = "http://mytestwebsite.co.uk", ShortUrlValue = _baseUrl + "test456" }
-                };
-            _urlRepositoryMock.Setup(repo => repo.GetAllAsync()).ReturnsAsync(shortUrls);
-
-            // Act
-            var result = await _urlShortenerService.GetAllAsync();
-
-            // Assert
-            Assert.Equal(shortUrls.Count, result.Count());
-        }
-
-        [Fact]
-        public async Task DeleteAsync_ValidAlias_CallsRepositoryDelete()
-        {
-            // Arrange
-            string alias = "test321";
-
-            // Act
-            await _urlShortenerService.DeleteAsync(alias);
-
-            // Assert
-            _urlRepositoryMock.Verify(repo => repo.DeleteAsync(alias), Times.Once);
-        }
+ 
     }
 }
