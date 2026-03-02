@@ -5,6 +5,8 @@ using UrlShortenerApi.Services;
 using UrlShortenerApi.Models;
 using Serilog;
 
+var UrlShortenerOrigins = "_urlShortenerOrigins";
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Configure Serilog
@@ -26,6 +28,18 @@ builder.Services.Configure<UrlShortenerServiceOptions>(configuration.GetSection(
 builder.Services.AddSingleton<IUrlRepository, FileUrlRepository>();
 builder.Services.AddSingleton<IUrlShortenerService, UrlShortenerService>();
 
+// Register CORS policy for Url-Shortener-Origins
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(UrlShortenerOrigins,
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:3000")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+        });
+});
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -46,6 +60,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// CORS Middleware to handled cross-origin requests.
+app.UseCors(UrlShortenerOrigins);
 
 app.UseAuthorization();
 
