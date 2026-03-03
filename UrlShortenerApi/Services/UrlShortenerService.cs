@@ -13,7 +13,7 @@ namespace UrlShortenerApi.Services
         public UrlShortenerService(IUrlRepository urlRepository, IOptions<UrlShortenerServiceOptions> options)
         { 
            _urlRepository = urlRepository;
-            _baseUrl = options.Value.BaseUrl ?? "http://localhost:8080/";
+            _baseUrl = options.Value.BaseUrl ?? "http://localhost:7102/";
         }
         public async Task<ShortUrl> ShortenUrlAsync(string fullUrl, string customAlias = null)
         {

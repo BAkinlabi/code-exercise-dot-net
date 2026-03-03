@@ -38,6 +38,7 @@ namespace UrlShortenerApi.Controllers
         #region Annotation
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
         [Produces("application/json")]
         #endregion
         [HttpPost("shorten")]
@@ -46,6 +47,9 @@ namespace UrlShortenerApi.Controllers
             if (string.IsNullOrWhiteSpace(req.FullUrl))
                 return BadRequest("fullUrl is required");
 
+            if (!Uri.IsWellFormedUriString(req.FullUrl, UriKind.Absolute))
+                return BadRequest("Invalid URL format");
+
             try
             {
                 var result = await _service.ShortenUrlAsync(req.FullUrl, req.CustomAlias);
@@ -53,13 +57,18 @@ namespace UrlShortenerApi.Controllers
             }
             catch (ArgumentException ex)
             {
-                _logger.LogError(ex, "Invalid URL.");
+                _logger.LogError(ex, "Invalid URL: {FullUrl}", req.FullUrl);
                 return BadRequest("Invalid URL");
             }
             catch (InvalidOperationException ex)
             {
-                _logger.LogError(ex, "Alias already taken.");
+                _logger.LogError(ex, "Alias already taken: {CustomAlias}", req.CustomAlias);
                 return BadRequest("Alias already taken");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An unexpected error occurred while shortening the URL.");
+                return StatusCode(500, "An unexpected error occurred");
             }
         }
 

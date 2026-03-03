@@ -8,15 +8,24 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
-    <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <Compile Remove="Data\**" />
+    <Compile Remove="Logs\**" />
+    <Compile Remove="NewFolder\**" />
+    <Content Remove="Data\**" />
+    <Content Remove="Logs\**" />
+    <Content Remove="NewFolder\**" />
+    <EmbeddedResource Remove="Data\**" />
+    <EmbeddedResource Remove="Logs\**" />
+    <EmbeddedResource Remove="NewFolder\**" />
+    <None Remove="Data\**" />
+    <None Remove="Logs\**" />
+    <None Remove="NewFolder\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\" />
-    <Folder Include="Logs\" />
-    <Folder Include="NewFolder\" />
+    <PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
 </Project>
