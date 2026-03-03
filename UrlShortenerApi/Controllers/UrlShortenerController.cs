@@ -15,7 +15,7 @@ namespace UrlShortenerApi.Controllers
         { 
             _service = service;
             _logger = logger;
-        } 
+        }
 
         /// <summary>
         /// Accepts a full url and saves it with an alias. 
@@ -33,6 +33,7 @@ namespace UrlShortenerApi.Controllers
         ///       }
         ///     
         /// </remarks>
+        /// <returns>shortened url</returns>
         /// <response code="201">URL successfully shortened</response>
         /// <response code="400">Invalid input or alias already taken</response>
         #region Annotation
@@ -73,15 +74,16 @@ namespace UrlShortenerApi.Controllers
         }
 
         /// <summary>
-        /// Accepts an alias and redirect to its full URL 
+        /// Accepts an alias and returns the full url details 
         /// </summary>
+        /// <param name="alias">alias</param>
         /// <remarks>
         /// Sample request:
         /// 
         ///     GET /api/{alias}
         ///     
         /// </remarks>
-        /// <returns>Redirect to full URL</returns>
+        /// <returns>full URL</returns>
         /// <response code="302">Redirect to the original URL</response>
         /// <response code="404">Alias not found</response>
         #region Annotation
@@ -92,6 +94,9 @@ namespace UrlShortenerApi.Controllers
         [HttpGet("{alias}")]
         public async Task<IActionResult> RedirectToFullUrl(string alias)
         {
+            if (string.IsNullOrWhiteSpace(alias))
+                return BadRequest("Alias is required");
+
             try
             {
                 var url = await _service.GetByAliasAsync(alias);
@@ -108,13 +113,14 @@ namespace UrlShortenerApi.Controllers
         /// <summary>
         /// Deletes a shortened URL 
         /// </summary>
+        ///  <param name="alias">alias</param>
         /// <remarks>
         /// Sample request:
         /// 
-        ///     GET /api/{alias}
+        ///     DELETE /api/{alias}
         ///     
         /// </remarks>
-        /// <returns>Redirect to full URL</returns>
+        /// <returns>NoContent</returns>
         /// <response code="204">Successfully deleted</response>
         /// <response code="404">Alias not found</response>
         #region Annotation
@@ -125,6 +131,10 @@ namespace UrlShortenerApi.Controllers
         [HttpDelete("{alias}")]
         public async Task<IActionResult> Delete(string alias)
         {
+
+            if (string.IsNullOrWhiteSpace(alias))
+                return BadRequest("Alias is required");
+
             try
             {
                 var url = await _service.GetByAliasAsync(alias);
